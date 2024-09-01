@@ -60,8 +60,17 @@ class PasetoLocal {
     return encrypt(key, randomBytes(32), payload, footer, implicit);
   }
 
+  public static String encrypt(SecretKey key, byte[] payload, String footer, String implicit) {
+    return encrypt(key, randomBytes(32), payload, footer, implicit);
+  }
+
   static String encrypt(
       SecretKey key, byte[] randomKey, String payload, String footer, String implicit) {
+    return encrypt(key, randomKey, payload.getBytes(UTF_8), footer, implicit);
+  }
+
+  static String encrypt(
+          SecretKey key, byte[] randomKey, byte[] payload, String footer, String implicit) {
     requireNonNull(key);
     requireNonNull(payload);
     verify(key.isValidFor(V3, PURPOSE_LOCAL), "Key is not valid for purpose and version");
@@ -80,12 +89,12 @@ class PasetoLocal {
     byte[] ak = authenticationKey(key, nonce);
 
     // 5
-    byte[] cipherText = encryptAesCtr(ek, n2, payload.getBytes(UTF_8));
+    byte[] cipherText = encryptAesCtr(ek, n2, payload);
 
     // 6
     byte[] preAuth =
-        PreAuthenticationEncoder.encode(
-            token.header(), nonce, cipherText, footer.getBytes(UTF_8), implicit.getBytes(UTF_8));
+            PreAuthenticationEncoder.encode(
+                    token.header(), nonce, cipherText, footer.getBytes(UTF_8), implicit.getBytes(UTF_8));
 
     // 7
     byte[] t = hmac384(ak, preAuth);
@@ -116,7 +125,25 @@ class PasetoLocal {
     return decrypt(key, token, footer, "");
   }
 
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#decrypt
+   */
+  public static byte[] decryptByteArray(SecretKey key, String token) {
+    return decryptByteArray(key, token, "");
+  }
+
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#decrypt
+   */
+  public static byte[] decryptByteArray(SecretKey key, String token, String footer) {
+    return decryptByteArray(key, token, footer, "");
+  }
+
   static String decrypt(SecretKey key, String token, String footer, String implicitAssertion) {
+    return new String(decryptByteArray(key, token, footer, implicitAssertion), UTF_8);
+  }
+
+  static byte[] decryptByteArray(SecretKey key, String token, String footer, String implicitAssertion) {
     requireNonNull(key);
     requireNonNull(token);
 
@@ -157,7 +184,6 @@ class PasetoLocal {
     }
 
     // 9
-    byte[] message = decryptAesCtr(ek, n2, c);
-    return new String(message, UTF_8);
+    return decryptAesCtr(ek, n2, c);
   }
 }

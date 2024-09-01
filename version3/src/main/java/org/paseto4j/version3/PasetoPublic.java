@@ -54,7 +54,15 @@ class PasetoPublic {
    * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#sign
    */
   static String sign(
-      PrivateKey privateKey, String payload, String footer, String implicitAssertion) {
+          PrivateKey privateKey, String payload, String footer, String implicitAssertion) {
+    return sign(privateKey, payload.getBytes(UTF_8), footer, implicitAssertion);
+  }
+
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#sign
+   */
+  static String sign(
+      PrivateKey privateKey, byte[] payload, String footer, String implicitAssertion) {
     requireNonNull(privateKey);
     requireNonNull(payload);
     verify(privateKey.isValidFor(V3, PURPOSE_PUBLIC), "Key is not valid for purpose and version");
@@ -71,7 +79,7 @@ class PasetoPublic {
         PreAuthenticationEncoder.encode(
             pk,
             token.header(),
-            payload.getBytes(UTF_8),
+            payload,
             footer.getBytes(UTF_8),
             implicitAssertion.getBytes(UTF_8));
 
@@ -81,7 +89,7 @@ class PasetoPublic {
 
     // 5
     return token
-        .payload(ByteUtils.concat(payload.getBytes(UTF_8), signature))
+        .payload(ByteUtils.concat(payload, signature))
         .footer(footer)
         .doFinal();
   }
@@ -91,6 +99,16 @@ class PasetoPublic {
    * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#verify
    */
   static String parse(
+          PublicKey publicKey, String signedMessage, String footer, String implicitAssertion)
+          throws SignatureException {
+    return new String(parseByteArray(publicKey, signedMessage, footer, implicitAssertion), UTF_8);
+  }
+
+  /**
+   * Parse the token,
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#verify
+   */
+  static byte[] parseByteArray(
       PublicKey publicKey, String signedMessage, String footer, String implicitAssertion)
       throws SignatureException {
     requireNonNull(publicKey);
@@ -114,7 +132,7 @@ class PasetoPublic {
     // 5
     verifySignature(publicKey, m2, signature);
 
-    return new String(message, UTF_8);
+    return message;
   }
 
   private static void verifySignature(PublicKey key, byte[] m2, byte[] signature)

@@ -36,6 +36,13 @@ public class Paseto {
   /**
    * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#encrypt
    */
+  public static String encrypt(SecretKey key, String payload) {
+    return PasetoLocal.encrypt(key, payload, "", "");
+  }
+
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#encrypt
+   */
   public static String encrypt(SecretKey key, String payload, String footer) {
     return PasetoLocal.encrypt(key, payload, footer, "");
   }
@@ -46,6 +53,35 @@ public class Paseto {
   public static String encrypt(
       SecretKey key, String payload, String footer, String implicitAssertion) {
     return PasetoLocal.encrypt(key, payload, footer, implicitAssertion);
+  }
+
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#encrypt
+   */
+  public static String encrypt(SecretKey key, byte[] payload) {
+    return PasetoLocal.encrypt(key, payload, "", "");
+  }
+
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#encrypt
+   */
+  public static String encrypt(SecretKey key, byte[] payload, String footer) {
+    return PasetoLocal.encrypt(key, payload, footer, "");
+  }
+
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#encrypt
+   */
+  public static String encrypt(
+          SecretKey key, byte[] payload, String footer, String implicitAssertion) {
+    return PasetoLocal.encrypt(key, payload, footer, implicitAssertion);
+  }
+
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#decrypt
+   */
+  public static String decrypt(SecretKey key, String signedMessage) {
+    return PasetoLocal.decrypt(key, signedMessage, "");
   }
 
   /**
@@ -61,6 +97,28 @@ public class Paseto {
   public static String decrypt(
       SecretKey key, String signedMessage, String footer, String implicitAssertion) {
     return PasetoLocal.decrypt(key, signedMessage, footer, implicitAssertion);
+  }
+
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#decrypt
+   */
+  public static byte[] decryptByteArray(SecretKey key, String signedMessage) {
+    return PasetoLocal.decryptByteArray(key, signedMessage, "");
+  }
+
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#decrypt
+   */
+  public static byte[] decryptByteArray(SecretKey key, String signedMessage, String footer) {
+    return PasetoLocal.decryptByteArray(key, signedMessage, footer);
+  }
+
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#sign
+   */
+  public static byte[] decryptByteArray(
+          SecretKey key, String signedMessage, String footer, String implicitAssertion) {
+    return PasetoLocal.decryptByteArray(key, signedMessage, footer, implicitAssertion);
   }
 
   /**
@@ -86,6 +144,28 @@ public class Paseto {
   }
 
   /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#sign
+   */
+  public static String sign(PrivateKey privateKey, byte[] payload) {
+    return sign(privateKey, payload, "");
+  }
+
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#sign
+   */
+  public static String sign(PrivateKey privateKey, byte[] payload, String footer) {
+    return sign(privateKey, payload, footer, "");
+  }
+
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#sign
+   */
+  public static String sign(
+          PrivateKey privateKey, byte[] payload, String footer, String implicitAssertion) {
+    return PasetoPublic.sign(privateKey, payload, footer, implicitAssertion);
+  }
+
+  /**
    * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#verify
    */
   public static String parse(PublicKey publicKey, String signedMessage) throws SignatureException {
@@ -107,5 +187,29 @@ public class Paseto {
       PublicKey publicKey, String signedMessage, String footer, String implicitAssertion)
       throws SignatureException {
     return PasetoPublic.parse(publicKey, signedMessage, footer, implicitAssertion);
+  }
+
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#verify
+   */
+  public static byte[] parseByteArray(PublicKey publicKey, String signedMessage) throws SignatureException {
+    return parseByteArray(publicKey, signedMessage, "");
+  }
+
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#verify
+   */
+  public static byte[] parseByteArray(PublicKey publicKey, String signedMessage, String footer)
+          throws SignatureException {
+    return parseByteArray(publicKey, signedMessage, footer, "");
+  }
+
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#verify
+   */
+  public static byte[] parseByteArray(
+          PublicKey publicKey, String signedMessage, String footer, String implicitAssertion)
+          throws SignatureException {
+    return PasetoPublic.parseByteArray(publicKey, signedMessage, footer, implicitAssertion);
   }
 }
